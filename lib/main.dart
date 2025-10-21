@@ -6,6 +6,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print('build called in main');
     return MaterialApp(
       theme: ThemeData.dark(),
       home: LoadingScreen(),

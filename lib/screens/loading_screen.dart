@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:clima/services/location.dart';
+import 'package:http/http.dart' as http;
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -7,29 +8,51 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  final LocationSettings locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.low,
-    // distanceFilter: 100,
-  );
-  void getLocation() async {
-    // async help to get these time consuming tasks to happen in the background instead of happening in the foreground
-    Position position =
-        await Geolocator.getCurrentPosition(locationSettings: locationSettings);
+  @override
+  void initState() {
+    super.initState();
+    print('initState called');
+    getLocation();
+  }
 
-    LocationPermission permission = await Geolocator.requestPermission();
-    print(position);
+  void getLocation() async {
+    Location location = Location();
+
+    await location.getCurrentLocation();
+
+    print(location.longitude);
+    print(location.latitude);
+  }
+
+  void getData() async {
+    final url = Uri.parse(
+        "https://api.openweathermap.org/data/2.5/weather?lat=55&lon=12&appid=75d94dccfba28");
+    final http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      print(response.body);
+    } else {
+      print('Error: ${response.statusCode}');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    getData();
+    String myMargin = 'abc';
+    late double myMarginAsDouble;
+
+    try {
+      myMarginAsDouble = double.parse(myMargin);
+    } catch (e) {
+      print(e);
+      // myMarginAsDouble = 30.0; // default value
+    }
+
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            getLocation(); //Get the current location
-          },
-          child: Text('Get Location'),
-        ),
+      body: Container(
+        margin: EdgeInsets.all(myMarginAsDouble ?? 30.0),
+        color: Colors.black,
       ),
     );
   }
