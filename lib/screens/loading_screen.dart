@@ -1,6 +1,7 @@
+import 'package:clima/services/weather.dart';
 import 'package:flutter/material.dart';
-import 'package:clima/services/location.dart';
-import 'package:http/http.dart' as http;
+import 'location_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -12,47 +13,28 @@ class _LoadingScreenState extends State<LoadingScreen> {
   void initState() {
     super.initState();
     print('initState called');
-    getLocation();
+    getLocationData();
   }
 
-  void getLocation() async {
-    Location location = Location();
+  void getLocationData() async {
+    var weatherData = await WeatherModel().getLocationWeather();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                LocationScreen(locationWeather: weatherData)));
 
-    await location.getCurrentLocation();
-
-    print(location.longitude);
-    print(location.latitude);
-  }
-
-  void getData() async {
-    final url = Uri.parse(
-        "https://api.openweathermap.org/data/2.5/weather?lat=55&lon=12&appid=75d94dccfba28");
-    final http.Response response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      print(response.body);
-    } else {
-      print('Error: ${response.statusCode}');
-    }
+    print('get location is called');
   }
 
   @override
   Widget build(BuildContext context) {
-    getData();
-    String myMargin = 'abc';
-    late double myMarginAsDouble;
-
-    try {
-      myMarginAsDouble = double.parse(myMargin);
-    } catch (e) {
-      print(e);
-      // myMarginAsDouble = 30.0; // default value
-    }
-
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.all(myMarginAsDouble ?? 30.0),
-        color: Colors.black,
+      body: Center(
+        child: SpinKitDoubleBounce(
+          color: Colors.white,
+          size: 50.0,
+        ),
       ),
     );
   }

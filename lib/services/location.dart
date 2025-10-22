@@ -3,7 +3,10 @@ import 'package:geolocator/geolocator.dart';
 class Location {
   late double latitude;
   late double longitude;
-
+  final LocationSettings locationSettings = LocationSettings(
+    accuracy: LocationAccuracy.low,
+    // distanceFilter: 100,
+  );
   Future<void> getCurrentLocation() async {
     // By failing to prepare, you are preparing to fail.
     try {
@@ -19,8 +22,3 @@ class Location {
     }
   }
 }
-
-final LocationSettings locationSettings = LocationSettings(
-  accuracy: LocationAccuracy.low,
-  // distanceFilter: 100,
-);
